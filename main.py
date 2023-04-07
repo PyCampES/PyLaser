@@ -1,3 +1,4 @@
+import socket
 import time
 import sys
 import machine
@@ -5,10 +6,13 @@ import machine
 ENERGY = 100
 NPIN = 34
 PLAYER = 'nachillo'
-PATH = '/hit/'
+PATH = '/hit'
 PORT = 8000
-HOST = 'http://192.68.5.182:{PORT}'
+HOST = f'192.168.5.182'
 MAC = 'a1b2c3'
+
+WIFI_SSID = 'Indaleccius_14C9_Exterior'
+WIFI_PWD = 'AADJXFFTFRCO'
 
 def connect_wifi():
     import network
@@ -16,18 +20,19 @@ def connect_wifi():
     wlan.active(True)
     if not wlan.isconnected():
         print('connecting to network...')
-        wlan.connect('Indaleccius_14C9_Exterior', 'AADJXFFTFRCO')
+        wlan.connect(WIFI_SSID, WIFI_PWD)
         while not wlan.isconnected():
             pass
     print('network config:', wlan.ifconfig())
 
 
 def send_hit(energy):
-    import socket
+    data = f'GET {PATH}?player={PLAYER}&mac={MAC}&energy={ENERGY} HTTP/1.0\r\nHost: {HOST}:{PORT}\r\n\r\n'
     addr = socket.getaddrinfo(HOST, PORT)[0][-1]
     s = socket.socket()
     s.connect(addr)
-    s.send(bytes(f'GET {PATH}?player={PLAYER}&mac={MAC}&energy={ENERGY} HTTP/1.0\r\nHost: {HOST}\r\n\r\n', 'utf8'))
+    print(data)
+    s.send(bytes(data, 'utf8'))
     while True:
         data = s.recv(100)
         if data:
@@ -46,7 +51,11 @@ while True:
         ENERGY -= 1
         print('HIT!')
         print(f"Energy: {ENERGY}")
-        send_hit(ENERGY)
+        try:
+            send_hit(ENERGY)
+        except Exception as e:
+            print('Bad HTTP response.')
+            print(e)
 
     if ENERGY <= 0:
         print('Die!!!')

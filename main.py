@@ -7,8 +7,8 @@ import ubinascii
 ENERGY = 100
 NPIN = 34
 PLAYER = 'nachillo'
-PATH = '/hit'
-PORT = 8000
+PATH = '/write?db=pylaser'
+PORT = 8086
 HOST = f'192.168.1.10'
 
 WIFI_SSID = 'toniToni'
@@ -34,7 +34,6 @@ def send_hit(energy):
     addr = socket.getaddrinfo(HOST, PORT)[0][-1]
     s = socket.socket()
     s.connect(addr)
-    print(data)
     s.send(bytes(data, 'utf8'))
     while True:
         data = s.recv(100)

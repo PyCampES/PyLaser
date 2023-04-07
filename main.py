@@ -3,10 +3,11 @@ import sys
 import machine
 
 ENERGY = 100
+NPIN = 34
 PLAYER = 'nachillo'
 PATH = '/hit/'
 PORT = 8000
-HOST = 'http://192.68.5.182:{PORT}{PATH}'
+HOST = 'http://192.68.5.182:{PORT}'
 MAC = 'a1b2c3'
 
 def connect_wifi():
@@ -23,8 +24,7 @@ def connect_wifi():
 
 def send_hit(energy):
     import socket
-    _, _, host, path = url.split('/', 3)
-    addr = socket.getaddrinfo(host, port)[0][-1]
+    addr = socket.getaddrinfo(HOST, PORT)[0][-1]
     s = socket.socket()
     s.connect(addr)
     s.send(bytes(f'GET {PATH}?player={PLAYER}&mac={MAC}&energy={ENERGY} HTTP/1.0\r\nHost: {HOST}\r\n\r\n', 'utf8'))
@@ -38,7 +38,7 @@ def send_hit(energy):
 
 
 connect_wifi()
-pin = machine.Pin(34, machine.Pin.IN)
+pin = machine.Pin(NPIN, machine.Pin.IN)
 print(f"Energy: {ENERGY}")
 while True:
     hit = not pin.value()

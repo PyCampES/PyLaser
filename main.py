@@ -2,6 +2,7 @@ import socket
 import time
 import sys
 import machine
+import ubinascii
 
 ENERGY = 100
 NPIN = 34
@@ -9,7 +10,6 @@ PLAYER = 'nachillo'
 PATH = '/hit'
 PORT = 8000
 HOST = f'192.168.1.10'
-MAC = 'a1b2c3'
 
 WIFI_SSID = 'toniToni'
 WIFI_PWD = 'cocoloco'
@@ -21,6 +21,8 @@ def connect_wifi():
     if not wlan.isconnected():
         print('connecting to network...')
         wlan.connect(WIFI_SSID, WIFI_PWD)
+        global MAC
+        MAC = ubinascii.hexlify(wlan.config("mac")).decode()
         while not wlan.isconnected():
             pass
     print('network config:', wlan.ifconfig())

@@ -9,7 +9,7 @@ PORT = 8000
 HOST = 'http://192.68.5.182:{PORT}{PATH}'
 MAC = 'a1b2c3'
 
-def do_connect():
+def connect_wifi():
     import network
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
@@ -36,9 +36,8 @@ def send_hit(energy):
             break
     s.close()
 
-do_connect()
 
-
+connect_wifi()
 pin = machine.Pin(34, machine.Pin.IN)
 print(f"Energy: {ENERGY}")
 while True:

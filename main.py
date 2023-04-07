@@ -29,7 +29,8 @@ def connect_wifi():
 
 
 def send_hit(energy):
-    data = f'GET {PATH}?player={PLAYER}&mac={MAC}&energy={ENERGY} HTTP/1.0\r\nHost: {HOST}:{PORT}\r\n\r\n'
+    payload = f"energy,player={PLAYER} value={energy}"
+    data = f'POST {PATH} HTTP/1.1\r\nHost: {HOST}:{PORT}\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: {len(payload)}\r\n\r\n{payload}'
     addr = socket.getaddrinfo(HOST, PORT)[0][-1]
     s = socket.socket()
     s.connect(addr)

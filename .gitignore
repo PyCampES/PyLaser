@@ -1,0 +1,5 @@
+.venv/
+venv/
+virtualenv/
+
+.python-version

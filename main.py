@@ -63,15 +63,14 @@ def main():
     global ENERGY, PLAYER, PATH, HOST, PORT
     while True:
 
-        hit = False
+        hit = 0
         for npin in NPINS:
             pin = machine.Pin(npin, machine.Pin.IN)
-            hit = not pin.value()
-            if hit:
-                break
+            if not pin.value():
+                hit += 1
 
         if hit:
-            ENERGY -= 1
+            ENERGY -= hit
             print('HIT!')
             print(f"Energy: {ENERGY}")
 

@@ -50,7 +50,10 @@ def energy_update():
     global ENERGY, PLAYER, PATH, HOST, PORT
     while True:
         time.sleep(0.3)
-        send_hit(ENERGY, PLAYER, PATH, HOST, PORT)
+        try:
+            send_hit(ENERGY, PLAYER, PATH, HOST, PORT)
+        except Exception:
+            pass
 
 def main():
     global ENERGY, PLAYER, PATH, HOST, PORT

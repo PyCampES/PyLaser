@@ -115,7 +115,7 @@ def display():
         time.sleep(0.1)
 
 
-# connect_wifi()
+connect_wifi()
 _thread.start_new_thread(main, [])
 _thread.start_new_thread(energy_update, [])
 _thread.start_new_thread(display, [])

@@ -7,10 +7,12 @@ import machine
 import ubinascii
 
 # Modificar estas variables para cada jugador
-PLAYER = 'nachillo'
+PLAYER = '<tu-nombre-aqui>'
 HOST = '192.168.1.10'
 
-ENERGY = 100
+
+
+ENERGY = 1000
 NPINS = (
     34,
     35,
@@ -19,6 +21,7 @@ NPINS = (
 PATH = '/write?db=pylaser'
 PORT = 8086
 
+# Nombre de red y password
 WIFI_SSID = 'toniToni'
 WIFI_PWD = 'cocoloco'
 
@@ -29,24 +32,35 @@ def connect_wifi():
         wlan.connect(WIFI_SSID, WIFI_PWD)
         while not wlan.isconnected():
             pass
+        print("Connected to the WLAN")
+    else:
+        print('Already connected to WLAN')
 
 
-def send_hit(energy):
-    payload = f"energy,player={PLAYER} value={energy}"
-    data = f'POST {PATH} HTTP/1.1\r\nHost: {HOST}:{PORT}\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: {len(payload)}\r\n\r\n{payload}'
-    addr = socket.getaddrinfo(HOST, PORT)[0][-1]
-    s = socket.socket()
-    s.connect(addr)
-    s.send(bytes(data, 'utf8'))
+def send_hit(energy, player, path, host, port):
+    payload = f"energy,player={player} value={energy}"
+    data = f'POST {path} HTTP/1.1\r\nHost: {host}:{port}\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: {len(payload)}\r\n\r\n{payload}'
+    addr = socket.getaddrinfo(host, port)[0][-1]
+    print("Sending request...")
+    try:
+        s = socket.socket()
+        s.connect(addr)
+        s.send(bytes(data, 'utf8'))
+    except:
+        print("Failed sending request :(")
+    finally:
+        s.close()
+        print("Socket closed.")
+
+
+def energy_update():
+    global ENERGY, PLAYER, PATH, HOST, PORT
     while True:
-        data = s.recv(100)
-        if not data:
-            break
-    s.close()
-
-
+        send_hit(ENERGY, PLAYER, PATH, HOST, PORT)
+        time.sleep(2)
 
 def main():
+    global ENERGY, PLAYER, PATH, HOST, PORT
     while True:
 
         hit = False
@@ -60,7 +74,6 @@ def main():
             ENERGY -= 1
             print('HIT!')
             print(f"Energy: {ENERGY}")
-            _thread.start_new_thread(send_hit, [ENERGY])
 
         if ENERGY <= 0:
             print('Die!!!')
@@ -73,4 +86,5 @@ def display():
 
 connect_wifi()
 _thread.start_new_thread(main, [])
+_thread.start_new_thread(energy_update, [])
 _thread.start_new_thread(display, [])

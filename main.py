@@ -10,11 +10,12 @@ import machine
 import ubinascii
 
 # Modificar estas variables para cada jugador
-PLAYER = '<tu-nombre-aqui>'
+PLAYER = 'JavaScript'
 HOST = '192.168.1.10'
 
 
 
+INITIAL_SLEEP = 10
 ENERGY = 100
 NPINS = (
     34,
@@ -63,7 +64,8 @@ def energy_update():
         time.sleep(2)
 
 def main():
-    global ENERGY, PLAYER, PATH, HOST, PORT
+    global ENERGY, PLAYER, PATH, HOST, PORT, INITIAL_SLEEP
+    time.sleep(INITIAL_SLEEP)
     print("Starting player...")
     while True:
 
@@ -94,11 +96,15 @@ def show_skull(display):
 
 
 def display():
-    global ENERGY
+    global ENERGY, INITIAL_SLEEP
     HEIGHT = 63
 
     i2c = machine.SoftI2C(sda=machine.Pin(21), scl=machine.Pin(22))
     display = ssd1306.SSD1306_I2C(127, HEIGHT, i2c)
+
+    display.framebuf.fill(0)
+    display.framebuf.text(f"Yo amo {PLAYER}", 30, 30, 255)
+    time.sleep(INITIAL_SLEEP)
 
     display.framebuf.fill(255)
     while True:

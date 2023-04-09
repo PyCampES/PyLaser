@@ -13,9 +13,11 @@ import ubinascii
 PLAYER = 'JavaScript'
 HOST = '192.168.1.10'
 
+# Nombre de red y password
+WIFI_SSID = 'toniToni'
+WIFI_PWD = 'cocoloco'
 
-
-INITIAL_SLEEP = 45
+INITIAL_SLEEP = 30
 ENERGY = 100
 NPINS = (
     34,
@@ -25,9 +27,6 @@ NPINS = (
 PATH = '/write?db=pylaser'
 PORT = 8086
 
-# Nombre de red y password
-WIFI_SSID = 'toniToni'
-WIFI_PWD = 'cocoloco'
 
 def connect_wifi():
     wlan = network.WLAN(network.STA_IF)
@@ -61,7 +60,7 @@ def energy_update():
     global ENERGY, PLAYER, PATH, HOST, PORT
     while True:
         send_hit(ENERGY, PLAYER, PATH, HOST, PORT)
-        time.sleep(2)
+        time.sleep(1)
 
 def main():
     global ENERGY, PLAYER, PATH, HOST, PORT, INITIAL_SLEEP
@@ -83,7 +82,7 @@ def main():
         if ENERGY <= 0:
             print('Die!!!')
             sys.exit()
-        time.sleep(0.1)
+        time.sleep(0.01)
 
 
 def show_skull(display):
@@ -124,6 +123,6 @@ def display():
 
 
 connect_wifi()
-_thread.start_new_thread(main, [])
 _thread.start_new_thread(energy_update, [])
 _thread.start_new_thread(display, [])
+main()
